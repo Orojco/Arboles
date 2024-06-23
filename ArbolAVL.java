@@ -48,6 +48,16 @@ public class ArbolAVL extends ArbolBinario {
         nodo.derecho = eliminarRec(nodo.derecho, datos);
         return balancear(nodo);
     }
+    
+    private Object encontrarMin(Nodo nodo) {
+        if (nodo == null) {
+            return null;
+        }
+        if (nodo.izquierdo == null) {
+            return nodo.dato;
+        }
+        return encontrarMin(nodo.izquierdo);
+    }
 
     private int altura(Nodo nodo) {
         if (nodo == null) {

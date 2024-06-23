@@ -11,9 +11,13 @@ public class ArbolRojoNegro extends ArbolBinario {
         if (raiz != null) {
             raiz.color = Nodo.Color.NEGRO;
         }
+
+        Nodo nodo = new Nodo(null, Nodo.Color.ROJO);
+        Object someData = null;
+        agregarRec(nodo, someData);
     }
 
-    private Nodo agregarRec(Nodo nodo, Object datos) {
+    protected Nodo agregarRec(Nodo nodo, Object datos) {
         if (nodo == null) {
             return new Nodo(datos, Nodo.Color.ROJO);
         }
@@ -33,7 +37,7 @@ public class ArbolRojoNegro extends ArbolBinario {
         }
     }
 
-    private Nodo eliminarRec(Nodo nodo, Object datos) {
+    protected Nodo eliminarRec(Nodo nodo, Object datos) {
         if (nodo == null) return null;
         if (nodo.dato.equals(datos)) {
             if (nodo.izquierdo == null && nodo.derecho == null) {
@@ -54,9 +58,39 @@ public class ArbolRojoNegro extends ArbolBinario {
         nodo.derecho = eliminarRec(nodo.derecho, datos);
         return balancear(nodo);
     }
+    
+    public void someMethod() {
+        Nodo nodo = new Nodo(null, Nodo.Color.ROJO);
+        Object datos = null;
+        eliminarRec(nodo, datos);
+    }
+
+    private Object encontrarMin(Nodo nodo) {
+        if (nodo == null) {
+            return null;
+        }
+        if (nodo.izquierdo == null) {
+            return nodo.dato;
+        }
+        return encontrarMin(nodo.izquierdo);
+    }
 
     private Nodo balancear(Nodo nodo) {
-        // Implementación específica para mantener las propiedades del árbol Rojo-Negro
         return nodo;
+    }
+
+    private static class Nodo {
+        private enum Color {
+            ROJO,
+            NEGRO
+        }
+    
+        private Object dato;
+        private Nodo izquierdo;
+        private Nodo derecho;
+    
+        public Nodo(Object dato, Color color) {
+            this.dato = dato;
+        }
     }
 }
