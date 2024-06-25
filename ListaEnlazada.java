@@ -1,42 +1,47 @@
-// ListaEnlazada.java
-public class ListaEnlazada {
-    Nodo cabeza;
+public class ListaEnlazada<T> {
+    private Nodo<T> head;
 
     public ListaEnlazada() {
-        this.cabeza = null;
+        this.head = null;
     }
 
-    public void agregar(Object datos) {
-        Nodo nuevo = new Nodo(datos);
-        if (cabeza == null) {
-            cabeza = nuevo;
+    public void insertar(T data) {
+        Nodo<T> nuevoNodo = new Nodo<>(data);
+        if (head == null) {
+            head = nuevoNodo;
         } else {
-            Nodo temp = cabeza;
-            while (temp.siguiente != null) {
-                temp = temp.siguiente;
+            Nodo<T> temp = head;
+            while (temp.getNext() != null) {
+                temp = temp.getNext();
             }
-            temp.siguiente = nuevo;
+            temp.setNext(nuevoNodo);
         }
     }
 
-    public void insertar(Object datos) {
-        Nodo nuevo = new Nodo(datos);
-        nuevo.siguiente = cabeza;
-        cabeza = nuevo;
-    }
-
-    public void eliminar(Object datos) {
-        if (cabeza == null) return;
-        if (cabeza.dato.equals(datos)) {
-            cabeza = cabeza.siguiente;
+    public void eliminar(T data) {
+        if (head == null) return;
+        if (head.getData().equals(data)) {
+            head = head.getNext();
             return;
         }
-        Nodo actual = cabeza;
-        while (actual.siguiente != null && !actual.siguiente.dato.equals(datos)) {
-            actual = actual.siguiente;
+        Nodo<T> current = head;
+        while (current.getNext() != null && !current.getNext().getData().equals(data)) {
+            current = current.getNext();
         }
-        if (actual.siguiente != null) {
-            actual.siguiente = actual.siguiente.siguiente;
+        if (current.getNext() != null) {
+            current.setNext(current.getNext().getNext());
         }
     }
+
+    public String imprimir() {
+        StringBuilder sb = new StringBuilder();
+        Nodo<T> temp = head;
+        while (temp != null) {
+            sb.append(temp.getData()).append(" -> ");
+            temp = temp.getNext();
+        }
+        sb.append("null");
+        return sb.toString();
+    }
 }
+

@@ -1,63 +1,56 @@
-// ListaCircularEnlazada.java
-public class ListaCircularEnlazada {
-    Nodo cabeza;
+public class ListaCircularEnlazada<T> {
+    private Nodo<T> head;
 
     public ListaCircularEnlazada() {
-        this.cabeza = null;
+        this.head = null;
     }
 
-    public void agregar(Object datos) {
-        Nodo nuevo = new Nodo(datos);
-        if (cabeza == null) {
-            cabeza = nuevo;
-            cabeza.siguiente = cabeza;
+    public void insertar(T data) {
+        Nodo<T> nuevoNodo = new Nodo<>(data);
+        if (head == null) {
+            head = nuevoNodo;
+            head.setNext(head);
         } else {
-            Nodo temp = cabeza;
-            while (temp.siguiente != cabeza) {
-                temp = temp.siguiente;
+            Nodo<T> temp = head;
+            while (temp.getNext() != head) {
+                temp = temp.getNext();
             }
-            temp.siguiente = nuevo;
-            nuevo.siguiente = cabeza;
+            temp.setNext(nuevoNodo);
+            nuevoNodo.setNext(head);
         }
     }
 
-    public void insertar(Object datos) {
-        Nodo nuevo = new Nodo(datos);
-        if (cabeza == null) {
-            cabeza = nuevo;
-            cabeza.siguiente = cabeza;
-        } else {
-            Nodo temp = cabeza;
-            while (temp.siguiente != cabeza) {
-                temp = temp.siguiente;
-            }
-            temp.siguiente = nuevo;
-            nuevo.siguiente = cabeza;
-            cabeza = nuevo;
-        }
-    }
-
-    public void eliminar(Object datos) {
-        if (cabeza == null) return;
-        if (cabeza.dato.equals(datos)) {
-            if (cabeza.siguiente == cabeza) {
-                cabeza = null;
+    public void eliminar(T data) {
+        if (head == null) return;
+        if (head.getData().equals(data)) {
+            if (head.getNext() == head) {
+                head = null;
             } else {
-                Nodo temp = cabeza;
-                while (temp.siguiente != cabeza) {
-                    temp = temp.siguiente;
+                Nodo<T> temp = head;
+                while (temp.getNext() != head) {
+                    temp = temp.getNext();
                 }
-                temp.siguiente = cabeza.siguiente;
-                cabeza = cabeza.siguiente;
+                head = head.getNext();
+                temp.setNext(head);
             }
             return;
         }
-        Nodo actual = cabeza;
-        while (actual.siguiente != cabeza && !actual.siguiente.dato.equals(datos)) {
-            actual = actual.siguiente;
+        Nodo<T> current = head;
+        while (current.getNext() != head && !current.getNext().getData().equals(data)) {
+            current = current.getNext();
         }
-        if (actual.siguiente != cabeza) {
-            actual.siguiente = actual.siguiente.siguiente;
+        if (current.getNext() != head) {
+            current.setNext(current.getNext().getNext());
         }
+    }
+
+    public void imprimir() {
+        if (head == null) return;
+        Nodo<T> temp = head;
+        do {
+            System.out.print(temp.getData() + " -> ");
+            temp = temp.getNext();
+        } while (temp != head);
+        System.out.println("(head)");
     }
 }

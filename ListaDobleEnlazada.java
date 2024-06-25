@@ -1,52 +1,63 @@
-// ListaDobleEnlazada.java
-public class ListaDobleEnlazada {
-    Nodo cabeza;
+public class ListaDobleEnlazada<T> {
+    private NodoDoble<T> head;
 
     public ListaDobleEnlazada() {
-        this.cabeza = null;
+        this.head = null;
     }
 
-    public void agregar(Object datos) {
-        Nodo nuevo = new Nodo(datos);
-        if (cabeza == null) {
-            cabeza = nuevo;
+    public void insertar(T data) {
+        NodoDoble<T> nuevoNodo = new NodoDoble<>(data);
+        if (head == null) {
+            head = nuevoNodo;
+            head.setNext(head);
+            head.setPrev(head);
         } else {
-            Nodo temp = cabeza;
-            while (temp.siguiente != null) {
-                temp = temp.siguiente;
+            NodoDoble<T> temp = head;
+            while (temp.getNext() != head) {
+                temp = temp.getNext();
             }
-            temp.siguiente = nuevo;
-            nuevo.anterior = temp;
+            temp.setNext(nuevoNodo);
+            nuevoNodo.setPrev(temp);
+            nuevoNodo.setNext(head);
+            head.setPrev(nuevoNodo);
         }
     }
 
-    public void insertar(Object datos) {
-        Nodo nuevo = new Nodo(datos);
-        nuevo.siguiente = cabeza;
-        if (cabeza != null) {
-            cabeza.anterior = nuevo;
-        }
-        cabeza = nuevo;
-    }
-
-    public void eliminar(Object datos) {
-        if (cabeza == null) return;
-        if (cabeza.dato.equals(datos)) {
-            cabeza = cabeza.siguiente;
-            if (cabeza != null) {
-                cabeza.anterior = null;
+    public void eliminar(T data) {
+        if (head == null) return;
+        if (head.getData().equals(data)) {
+            if (head.getNext() == head) {
+                head = null;
+            } else {
+                NodoDoble<T> temp = head;
+                while (temp.getNext() != head) {
+                    temp = temp.getNext();
+                }
+                head = head.getNext();
+                temp.setNext(head);
+                head.setPrev(temp);
             }
             return;
         }
-        Nodo actual = cabeza;
-        while (actual.siguiente != null && !actual.siguiente.dato.equals(datos)) {
-            actual = actual.siguiente;
+        NodoDoble<T> current = head;
+        while (current.getNext() != head && !current.getNext().getData().equals(data)) {
+            current = current.getNext();
         }
-        if (actual.siguiente != null) {
-            actual.siguiente = actual.siguiente.siguiente;
-            if (actual.siguiente != null) {
-                actual.siguiente.anterior = actual;
-            }
+        if (current.getNext() != head) {
+            NodoDoble<T> toDelete = current.getNext();
+            current.setNext(toDelete.getNext());
+            toDelete.getNext().setPrev(current);
         }
+    }
+
+    public String imprimir() {
+        StringBuilder sb = new StringBuilder();
+        NodoDoble<T> temp = head;
+        do {
+            sb.append(temp.getData()).append(" <-> ");
+            temp = temp.getNext();
+        } while (temp != head);
+        sb.append("(head)");
+        return sb.toString();
     }
 }
