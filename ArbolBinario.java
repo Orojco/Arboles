@@ -1,85 +1,104 @@
-// ArbolBinario.java
-public class ArbolBinario {
-    Nodo raiz;
+public class NodoArbol<T> {
+    private T data;
+    private NodoArbol<T> left;
+    private NodoArbol<T> right;
+
+    public NodoArbol(T data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public NodoArbol<T> getLeft() {
+        return left;
+    }
+
+    public void setLeft(NodoArbol<T> left) {
+        this.left = left;
+    }
+
+    public NodoArbol<T> getRight() {
+        return right;
+    }
+
+    public void setRight(NodoArbol<T> right) {
+        this.right = right;
+    }
+}
+
+public class ArbolBinario<T extends Comparable<T>> {
+    private NodoArbol<T> root;
 
     public ArbolBinario() {
-        this.raiz = null;
+        this.root = null;
     }
 
-    public void agregar(Object datos) {
-        raiz = agregarRec(raiz, datos);
+    public void insertar(T data) {
+        root = insertarRec(root, data);
     }
 
-    private Nodo agregarRec(Nodo nodo, Object datos) {
-        if (nodo == null) {
-            return new Nodo(datos);
+    private NodoArbol<T> insertarRec(NodoArbol<T> root, T data) {
+        if (root == null) {
+            root = new NodoArbol<>(data);
+            return root;
         }
-        if (Math.random() < 0.5) {
-            nodo.izquierdo = agregarRec(nodo.izquierdo, datos);
+        if (data.compareTo(root.getData()) < 0) {
+            root.setLeft(insertarRec(root.getLeft(), data));
+        } else if (data.compareTo(root.getData()) > 0) {
+            root.setRight(insertarRec(root.getRight(), data));
+        }
+        return root;
+    }
+
+    public void eliminar(T data) {
+        root = eliminarRec(root, data);
+    }
+
+    private NodoArbol<T> eliminarRec(NodoArbol<T> root, T data) {
+        if (root == null) return root;
+
+        if (data.compareTo(root.getData()) < 0) {
+            root.setLeft(eliminarRec(root.getLeft(), data));
+        } else if (data.compareTo(root.getData()) > 0) {
+            root.setRight(eliminarRec(root.getRight(), data));
         } else {
-            nodo.derecho = agregarRec(nodo.derecho, datos);
+            if (root.getLeft() == null) return root.getRight();
+            else if (root.getRight() == null) return root.getLeft();
+
+            root.setData(minValue(root.getRight()));
+            root.setRight(eliminarRec(root.getRight(), root.getData()));
         }
-        return nodo;
+        return root;
     }
 
-    public void insertar(Object datos) {
-        agregar(datos);
-    }
-
-    public void eliminar(Object datos) {
-        raiz = eliminarRec(raiz, datos);
-    }
-
-    private Nodo eliminarRec(Nodo nodo, Object datos) {
-        if (nodo == null) return null;
-        if (nodo.dato.equals(datos)) {
-            if (nodo.izquierdo == null && nodo.derecho == null) {
-                return null;
-            }
-            if (nodo.izquierdo == null) {
-                return nodo.derecho;
-            }
-            if (nodo.derecho == null) {
-                return nodo.izquierdo;
-            }
-            Object minValue = encontrarMin(nodo.derecho);
-            nodo.dato = minValue;
-            nodo.derecho = eliminarRec(nodo.derecho, minValue);
-            return nodo;
+    private T minValue(NodoArbol<T> root) {
+        T minv = root.getData();
+        while (root.getLeft() != null) {
+            minv = root.getLeft().getData();
+            root = root.getLeft();
         }
-        nodo.izquierdo = eliminarRec(nodo.izquierdo, datos);
-        nodo.derecho = eliminarRec(nodo.derecho, datos);
-        return nodo;
+        return minv;
     }
 
-    private Object encontrarMin(Nodo nodo) {
-        while (nodo.izquierdo != null) {
-            nodo = nodo.izquierdo;
-        }
-        return nodo.dato;
+    public void imprimir() {
+        imprimirRec(root);
+        System.out.println();
     }
 
-    public void inOrden(Nodo nodo) {
-        if (nodo != null) {
-            inOrden(nodo.izquierdo);
-            System.out.print(nodo.dato + " ");
-            inOrden(nodo.derecho);
-        }
-    }
-
-    public void preOrden(Nodo nodo) {
-        if (nodo != null) {
-            System.out.print(nodo.dato + " ");
-            preOrden(nodo.izquierdo);
-            preOrden(nodo.derecho);
-        }
-    }
-
-    public void postOrden(Nodo nodo) {
-        if (nodo != null) {
-            postOrden(nodo.izquierdo);
-            postOrden(nodo.derecho);
-            System.out.print(nodo.dato + " ");
+    private void imprimirRec(NodoArbol<T> root) {
+        if (root != null) {
+            imprimirRec(root.getLeft());
+            System.out.print(root.getData() + " ");
+            imprimirRec(root.getRight());
         }
     }
 }
+
